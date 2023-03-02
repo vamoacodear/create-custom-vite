@@ -1,0 +1,35 @@
+# Apple
+.DS_Store
+
+# Editor
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# Build
+dist
+bundle-report.json
+
+# Local config
+.npmrc
+.yarnrc
+
+# Logs
+*.log
+*.heapsnapshot
+
+# Dependencies
+node_modules
+
+# Tests
+coverage
+test-report.json
+
+# Yarn
+.yarnclean
+yarn-error.log
+
+# Config local
+config_paas/configmap_local.yml
