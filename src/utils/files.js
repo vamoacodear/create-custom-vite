@@ -1,3 +1,4 @@
+import { intro, outro } from '@clack/prompts'
 import fs from 'fs'
 import path from 'path'
 
@@ -6,44 +7,34 @@ import {
   prettierDefaultConfig,
 } from '../config/pckgsConfigs.js'
 
-export const saveFile = (dir: string, file: unknown) => {
+export const saveFile = (dir, file) => {
   fs.writeFileSync(
     path.join(dir, 'package.json'),
     JSON.stringify(file, null, 2)
   )
 }
 
-export const createDirectory = (directory: fs.PathLike) => {
-  try {
-    if (!fs.existsSync(directory)) {
-      console.log(
-        `✅ El directorio ${directory} no existe. Se creará automáticamente.`
-      )
-      fs.mkdirSync(directory, { recursive: true })
-    } else {
-      console.log(`🫠  El directorio ${directory} ya existe.`)
-      process.exit(1)
-    }
-  } catch (error: any) {
-    console.error(`🚨 Error al crear el directorio: ${error.message}`)
-    process.exit(1)
+export const createDirectory = (directory) => {
+  if (!fs.existsSync(directory)) {
+    outro(`✅ El directorio ${directory} no existe. Se creará automáticamente.`)
+    fs.mkdirSync(directory, { recursive: true })
+    return true
+  } else {
+    outro(`🥴 El directorio ${directory} ya existe, elegí otro nombre.`)
+    return false
   }
 }
 
 export const createDefaultConfigurationFiles = (
-  directory: string,
-  answers: {
-    includeESLint: any
-    includePrettier: any
-    includeLintStaged: any
-    includeHusky: any
-  },
-  packageJson: { scripts: { [x: string]: string } }
+  directory,
+  answers,
+  packageJson
 ) => {
   const packageJsonPath = path.join(directory, 'package.json')
 
+  console.log('respuestas', answers)
   if (answers.includeESLint) {
-    console.log(
+    intro(
       '📝 Voy a crear el archivo de configuración con valores por defecto para ESLint...'
     )
     const eslintConfigPath = path.resolve(directory, '.eslintrc.json')
@@ -52,7 +43,7 @@ export const createDefaultConfigurationFiles = (
   }
 
   if (answers.includePrettier) {
-    console.log(
+    intro(
       '📝 Voy a crear el archivo de configuración con valores por defecto para Prettier...'
     )
     const prettierConfigPath = path.resolve(directory, '.prettierrc.json')
@@ -61,7 +52,7 @@ export const createDefaultConfigurationFiles = (
   }
 
   if (answers.includeLintStaged) {
-    console.log(
+    intro(
       '📝 Voy a crear el archivo de configuración con valores por defecto para lint-staged...'
     )
     const lintStagedConfigPath = path.resolve(directory, '.lintstagedrc.json')
@@ -77,7 +68,7 @@ export const createDefaultConfigurationFiles = (
   }
 
   if (answers.includeHusky) {
-    console.log('📝 Voy a configurar Husky para que use lint-staged...')
+    intro('📝 Configurando Husky para que use lint-staged...')
 
     if (!packageJson.scripts) {
       packageJson.scripts = {}
@@ -99,15 +90,13 @@ npx lint-staged`
   }
 }
 
-export const readFile = (path: fs.PathLike) => {
+export const readFile = (path) => {
   if (fs.existsSync(path)) {
     try {
       const content = fs.readFileSync(path, 'utf8')
       return JSON.parse(content)
-    } catch (error: any) {
-      console.error(
-        `🚨 Error al leer el archivo package.json: ${error.message}`
-      )
+    } catch (error) {
+      outro(`🚨 Error al leer el archivo package.json: ${error.message}`)
       process.exit(1)
     }
   }
