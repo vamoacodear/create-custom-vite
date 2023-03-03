@@ -32,7 +32,6 @@ export const createDefaultConfigurationFiles = (
 ) => {
   const packageJsonPath = path.join(directory, 'package.json')
 
-  console.log('respuestas', answers)
   if (answers.includeESLint) {
     intro(
       '📝 Voy a crear el archivo de configuración con valores por defecto para ESLint...'
