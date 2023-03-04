@@ -2,6 +2,7 @@ const latest = 'latest'
 
 export default {
   eslintVersion: latest,
+  eslintStandarVersion: '17.0.0',
   eslintReactVersion: latest,
   prettierVersion: latest,
   eslintPrettierVersion: latest,

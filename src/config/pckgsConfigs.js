@@ -1,4 +1,4 @@
-const eslintDefaultConfig = {
+export const eslint_default = {
   env: {
     browser: true,
     es2021: true,
@@ -15,7 +15,7 @@ const eslintDefaultConfig = {
   },
 }
 
-const prettierDefaultConfig = {
+export const prettier_default = {
   semi: false,
   trailingComma: 'es5',
   singleQuote: true,
@@ -23,4 +23,4 @@ const prettierDefaultConfig = {
   tabWidth: 2,
 }
 
-export { eslintDefaultConfig, prettierDefaultConfig }
+export const prettier_none = {}

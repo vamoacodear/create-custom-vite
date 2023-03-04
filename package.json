@@ -31,7 +31,6 @@
     "create-custom-vite": "file://."
   },
   "dependencies": {
-    "@bdsqqq/try": "2.3.1",
     "@clack/prompts": "0.6.1",
     "picocolors": "1.0.0"
   },

@@ -1,18 +1,23 @@
 import * as p from '@clack/prompts'
 import colors from 'picocolors'
 
-import { viteTemplateOptions } from './options.js'
+import {
+  eslintOptions,
+  prettierOptions,
+  toolsOptions,
+  viteTemplateOptions,
+} from './options.js'
 
 export const getProjectName = async () =>
   p.text({
     message: colors.cyan('1️⃣  Ponele nombre a tu proyecto:'),
     validate: (value) => {
       if (value.length === 0) {
-        return colors.red('El mensaje no puede estar vacío')
+        return colors.red('⚠️ El mensaje no puede estar vacío')
       }
 
       if (value.length > 50) {
-        return colors.red('El mensaje no puede tener más de 50 caracteres')
+        return colors.red('⚠️  El mensaje no puede tener más de 50 caracteres')
       }
     },
   })
@@ -34,28 +39,32 @@ export const getPackageManager = async () =>
     defaultValue: 'npm',
   })
 
-export const getEslintConfig = async () =>
-  await p.confirm({
-    message: '4️⃣  ¿Queres tener ESLint? 📝 Si? Creamos config por defecto...',
+export const getTools = async () => {
+  return await p.group({
+    tools: ({ results }) =>
+      p.multiselect({
+        message: `💡¿Agregamos otras herramientas?`,
+        initialValues: ['eslint-recommended', 'prettier-recommended'],
+        options: toolsOptions,
+        required: false,
+      }),
+    eslintConfigType: ({ results }) => {
+      if (!results.includeEslint) {
+        return p.select({
+          message: '¿Que tipo de configuración queres para ESLint?',
+          options: eslintOptions,
+          required: true,
+        })
+      }
+    },
+    prettierConfigType: ({ results }) => {
+      if (!results.includePrettier) {
+        return p.select({
+          message: `¿Que tipo de configuración queres para Prettier?`,
+          options: prettierOptions,
+          required: true,
+        })
+      }
+    },
   })
-
-export const getPrettiertConfig = async () =>
-  await p.confirm({
-    message: '5️⃣  ¿Queres tener Prettier? 📝 Si? Creamos config por defecto...',
-  })
-
-export const getHuskyConfig = async () =>
-  p.confirm({
-    message: '6️⃣  ¿Queres tener Husky? 📝 Si? Creamos config por defecto...',
-  })
-
-export const getLintStagedConfig = async () =>
-  await p.confirm({
-    message:
-      '7️⃣   ¿Queres tener Lint Staged? 📝 Si? Creamos config por defecto...',
-  })
-
-export const getRouter = async () =>
-  await p.confirm({
-    message: '8️⃣   ¿Queres tener React Router?',
-  })
+}

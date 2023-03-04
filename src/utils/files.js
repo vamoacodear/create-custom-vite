@@ -1,22 +1,28 @@
-import { intro, outro } from '@clack/prompts'
+import { intro, outro, spinner } from '@clack/prompts'
 import fs from 'fs'
 import path from 'path'
 
 import {
-  eslintDefaultConfig,
-  prettierDefaultConfig,
+  eslint_default,
+  prettier_default,
+  prettier_none,
 } from '../config/pckgsConfigs.js'
 
-export const saveFile = (dir, file) => {
-  fs.writeFileSync(
-    path.join(dir, 'package.json'),
-    JSON.stringify(file, null, 2)
-  )
+const PACKAGE_JSON = 'package.json'
+
+const saveFile = (dir, file) => {
+  fs.writeFileSync(path.join(dir, PACKAGE_JSON), JSON.stringify(file, null, 2))
+}
+
+export const deleteDirectory = (directory, cb) => {
+  if (fs.existsSync(directory)) {
+    fs.rm(directory, () => cb())
+  }
 }
 
 export const createDirectory = (directory) => {
   if (!fs.existsSync(directory)) {
-    outro(`✅ El directorio ${directory} no existe. Se creará automáticamente.`)
+    // outro(`✅ El directorio ${directory} no existe. Se creará automáticamente.`)
     fs.mkdirSync(directory, { recursive: true })
     return true
   } else {
@@ -25,60 +31,74 @@ export const createDirectory = (directory) => {
   }
 }
 
-export const createDefaultConfigurationFiles = (
-  directory,
-  answers,
-  packageJson
-) => {
-  const packageJsonPath = path.join(directory, 'package.json')
+export const getFile = (dir, file) => {
+  const pathFile = path.join(dir, file)
+  return readFile(pathFile)
+}
 
-  if (answers.includeESLint) {
-    intro(
-      '📝 Voy a crear el archivo de configuración con valores por defecto para ESLint...'
-    )
-    const eslintConfigPath = path.resolve(directory, '.eslintrc.json')
-    const eslintConfigContent = JSON.stringify(eslintDefaultConfig, null, 2)
-    fs.writeFileSync(eslintConfigPath, eslintConfigContent)
+export const saveContent = (dir, config, file) => {
+  const pathFile = path.resolve(dir, file)
+  const pathContent = JSON.stringify(config, null, 2)
+  fs.writeFileSync(pathFile, pathContent)
+}
+
+export const setConfigurations = async (directory, answers) => {
+  const s = spinner()
+
+  const {
+    tools: [includeESLint, includePrettier, includeHusky, includeLintStaged],
+    eslintConfigType,
+    prettierConfigType,
+  } = answers
+
+  const packageJson = getFile(directory, PACKAGE_JSON)
+
+  if (includeESLint) {
+    s.start('⏳ Configurando ESLint...')
+
+    if (eslintConfigType === 'default') {
+      saveContent(directory, eslint_default, '.eslintrc')
+    } else {
+      packageJson.eslintConfig = {
+        extends: 'standard',
+      }
+    }
+    s.stop('✅ Configuración de ESLint finalizada...')
   }
 
-  if (answers.includePrettier) {
-    intro(
-      '📝 Voy a crear el archivo de configuración con valores por defecto para Prettier...'
-    )
-    const prettierConfigPath = path.resolve(directory, '.prettierrc.json')
-    const prettierConfigContent = JSON.stringify(prettierDefaultConfig, null, 2)
-    fs.writeFileSync(prettierConfigPath, prettierConfigContent)
+  if (includePrettier) {
+    s.start('⏳ Configurando Prettier')
+
+    const prettierConfig =
+      prettierConfigType === 'default' ? prettier_default : prettier_none
+
+    saveContent(directory, prettierConfig, '.prettierrc')
+
+    s.stop('✅ Configuración de Prettier finalizada!')
   }
 
-  if (answers.includeLintStaged) {
-    intro(
-      '📝 Voy a crear el archivo de configuración con valores por defecto para lint-staged...'
-    )
-    const lintStagedConfigPath = path.resolve(directory, '.lintstagedrc.json')
-    const lintStagedConfigContent = JSON.stringify(
-      {
-        './*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
-        './*.{json,css,md}': ['prettier --write'],
-      },
-      null,
-      2
-    )
-    fs.writeFileSync(lintStagedConfigPath, lintStagedConfigContent)
-  }
-
-  if (answers.includeHusky) {
-    intro('📝 Configurando Husky para que use lint-staged...')
+  if (includeLintStaged) {
+    s.start('⏳ Configurando lint-staged en package.json')
 
     if (!packageJson.scripts) {
       packageJson.scripts = {}
     }
+
     packageJson.scripts['lint-staged'] = 'lint-staged'
-    fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2))
+
+    packageJson['lint-staged'] = {
+      './*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
+      './*.{json,css,md}': ['prettier --write'],
+    }
+
+    s.stop('✅ Lint Staged configurado!')
+  }
+
+  if (includeHusky) {
+    s.start('⏳ Configurando Husky para que corra lint-staged')
 
     const huskyDirectory = path.resolve(directory, '.husky')
-    if (!fs.existsSync(huskyDirectory)) {
-      fs.mkdirSync(huskyDirectory)
-    }
+    createDirectory(huskyDirectory)
 
     const huskyConfigPath = path.resolve(directory, '.husky', 'pre-commit')
     const huskyConfigContent = `#!/usr/bin/env sh
@@ -86,7 +106,13 @@ export const createDefaultConfigurationFiles = (
 
 npx lint-staged`
     fs.writeFileSync(huskyConfigPath, huskyConfigContent)
+
+    s.stop('✅ Husky configurado!')
   }
+
+  s.start('⏳ Guardando cambios en package.json')
+  saveFile(directory, packageJson)
+  s.stop('✅ Cambios guardado en package.json')
 }
 
 export const readFile = (path) => {
@@ -95,7 +121,7 @@ export const readFile = (path) => {
       const content = fs.readFileSync(path, 'utf8')
       return JSON.parse(content)
     } catch (error) {
-      outro(`🚨 Error al leer el archivo package.json: ${error.message}`)
+      outro(`🚨 ${error.message}`)
       process.exit(1)
     }
   }

@@ -1,19 +1,30 @@
-import { outro, spinner } from '@clack/prompts'
+import { cancel, outro, spinner } from '@clack/prompts'
 import { exec } from 'child_process'
 import { promisify } from 'node:util'
-import path from 'path'
 
-import versions from '../config/versions.js'
-import { readFile } from './files.js'
+import { toolsOptions } from '../config/options.js'
+import { deleteDirectory } from '../utils/files.js'
 
 const execAsync = promisify(exec)
+const s = spinner()
 
-export const installDependencies = async (directory, manager) => {
-  const { stdout, stderr } = await execAsync(
-    `cd ${directory} && ${manager} install`
+export const installDependencies = async (directory, manager, packages) => {
+  s.start(
+    `⏳ Instalando paquetes via ${manager}... puede tardar unos segundos!`
   )
 
-  return { stdout, stderr }
+  const { stdout, stderr } = await execAsync(
+    `cd ${directory} && ${manager} install ${packages}`
+  )
+
+  if (stdout) {
+    s.stop('✅ Instalación finalizada')
+  }
+
+  if (stderr) {
+    s.stop(`🚨 ${stderr}`)
+    process.exit(1)
+  }
 }
 
 export const createViteTemplate = async (directory, answers) => {
@@ -23,63 +34,68 @@ export const createViteTemplate = async (directory, answers) => {
 
   // Crear el proyecto con el package manager seleccionado, para npm cambia.
   // Por ahora solo instalamos con npm
-  if (answers.manager === 'npm') {
+  if (manager === 'npm') {
     viteCreate = `create vite@latest ${directory} --`
   }
 
-  if (answers.template) {
+  if (template) {
     viteCreate += ` --template ${template}`
   }
 
-  const s = spinner()
   s.start(`⏳ Ejecutando la creación del proyecto: ${directory} `)
 
   const { stdout, stderr } = await execAsync(`${manager} ${viteCreate}`)
 
-  return { stdout, stderr, s }
+  if (stdout) {
+    s.stop(`✅ Proyecto ${directory} creado exitosamente`)
+  }
+
+  if (stderr) {
+    s.stop(`🚨 ${stderr}`)
+    await exitProgram({ name: directory })
+  }
 }
 
-export const setExtraDependencies = (directory, answers) => {
-  const packageJsonPath = path.join(directory, 'package.json')
+export const getPackagesToInstall = (answers) => {
+  const { tools } = answers
+  let packages = []
 
-  let packageJson = readFile(packageJsonPath)
+  toolsOptions.forEach((tool) => {
+    Object.values(tools).forEach((key) => {
+      let configType = 'default'
 
-  if (answers.includeESLint) {
-    packageJson.devDependencies['eslint'] = versions.eslintVersion
-    packageJson.devDependencies['eslint-plugin-react'] =
-      versions.eslintReactVersion
-  }
-
-  if (answers.includePrettier) {
-    packageJson.devDependencies['prettier'] = versions.prettierVersion
-    packageJson.devDependencies['eslint-config-prettier'] =
-      versions.eslintPrettierVersion
-    packageJson.devDependencies['eslint-plugin-prettier'] =
-      versions.eslintPluginPrettierVersion
-  }
-
-  if (answers.includeHusky) {
-    packageJson.devDependencies['husky'] = versions.huskyVersion
-  }
-
-  if (answers.includeLintStaged) {
-    packageJson.devDependencies['lint-staged'] = versions.lintStagedVersion
-  }
-
-  if (answers.includeReactRouter) {
-    packageJson.devDependencies['react-router-dom'] = versions.routerVersion
-    packageJson.devDependencies['localforage'] = versions.routerVersion
-    packageJson.devDependencies['match-sorter'] = versions.routerVersion
-    packageJson.devDependencies['sort-by'] = versions.routerVersion
-  }
-
-  return packageJson
+      let pckg
+      if (tool.value === key) {
+        if (
+          answers.hasOwnProperty('eslintConfigType') &&
+          key.includes('eslint')
+        ) {
+          configType = answers['eslintConfigType']
+        }
+        if (
+          answers.hasOwnProperty('prettierConfigType') &&
+          key.includes('prettier')
+        ) {
+          configType = answers['prettierConfigType']
+        }
+        pckg = tool.config[configType]
+        packages.push(pckg)
+      }
+      return
+    })
+  })
+  return packages.join(' ').trim()
 }
 
 export function exitProgram({
+  name = '',
   code = 0,
-  message = '🏁 Cancelaste la operación.',
+  message = '💔 Cancelaste la operación.',
 } = {}) {
-  outro(colors.yellow(message))
+  cancel(message)
+  const cb = () => {
+    outro(`🗑️ El directorio ${name} se borró con exito.`)
+  }
+  name && deleteDirectory(name, cb)
   process.exit(code)
 }
