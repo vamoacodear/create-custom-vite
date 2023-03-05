@@ -1,6 +1,6 @@
 {
   "name": "create-custom-vite",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Customiza tu proyecto Vite",
   "type": "module",
   "bin": {

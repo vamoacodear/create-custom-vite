@@ -39,7 +39,7 @@ const VITE_ERR = `🚨  Error creando el template de Vite: _stderr_`
 
 const WELCOME = `Hola 🤗 vamo' a crear tu nuevo proyecto Vite personalizado!...`
 const FINISH = '🥳 Tu proyecto está listo para usar! Seguí estos pasos'
-const THANKS = `Si te sirvió el proyecto, dejale una ⭐️ al repo https://github.com/vamoacodear/create-custom-vite
+const THANKS = `Apoya el proyecto dejándole una ⭐️ al repo https://github.com/vamoacodear/create-custom-vite
 Gracias 💜 ${colors.magenta(`@vamoacodear`)}`
 
 export {

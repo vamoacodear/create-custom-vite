@@ -15,5 +15,5 @@ Una descripción clara y concisa de lo que quieres que ocurra.
 **Describa las alternativas que ha considerado**
 Una descripción clara y concisa de las soluciones o características alternativas que has considerado.
 
-\*\*Contexto adicional
+**Contexto adicional**
 Añade aquí cualquier otro contexto o capturas de pantalla sobre la solicitud de función.

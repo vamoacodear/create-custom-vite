@@ -1,10 +1,39 @@
 # create-custom-vite
 
-Es un CLI que utiliza como base los templates de Vite oficiales: react o react-ts
+CLI en construcción 🚧 para crear proyecto de Vite, que por el momento utiliza como base los templates oficiales: react o react-ts.
 
-te configura un proyecto Vite nuevo (react/react-ts) con herramientas como eslint, prettier, husky, lint-staged, etc. Con archivos de configuración _por defecto_ para que no pierdas tiempo y comiences a codear! 🤓
+Podes elegir entre estas herramientas, algunas tienen opciones de configuración extra:
 
-**Nota**: El proyecto es un mvp 🚧 , si bien es funcional se irá mejorando con su feedback 💜.
+| Nombre | Configuración | Recomendado
+| ------ | --- | ---
+| ESLint | Recomendada - Standar |  ✅   |
+| Prettier | Por defecto - Ninguna | ✅
+| Husky |
+| Lint Staged |
+| React router |
+
+De esta manera no perdes tiempo y podes empezar a codear! 🤓
+
+**NOTA**: Las opciones recomendadas (✅), están tildadas por defecto para que no las tengas que seleccionar. Mejoran tu entorno de desarrollo, ocupandose del formato del código y <span style="text-decoration: underline; text-decoration-skip-ink: auto; text-decoration-color: red;">marcando errores</span>. **Podes destildarlas**
+
+### Configuraciones extra
+
+**ESLint**
+
+| **Recomendada** |Standar |
+| --- | --- |
+|✔ How would you like to use ESLint? · **problems** | [Info](https://www.npmjs.com/package/standard#install)
+✔ What type of modules does your project use? · **esm** |
+✔ Which framework does your project use? · **react** |
+✔ Does your project use TypeScript? · **No 🚧** / Yes |
+✔ Where does your code run? · **browser** |
+✔ What format do you want your config file to be in? · **JavaScript** |
+
+**Prettier**
+
+| **Por defecto** | Ninguna |
+| ----------------| ------- |
+| [Info](PRETTIER_CONFIG.md) | {} |
 
 ## Como usar
 
@@ -16,7 +45,7 @@ te configura un proyecto Vite nuevo (react/react-ts) con herramientas como eslin
 
 2. Responde las preguntas con (y/n) o elegiendo una de las opciones.
 
-> 💡 Podes presionar _Enter_ en vez de _y_
+> 💡 Si la opción esta tildada por defecto, podes utilizar **Enter**
 
 3. Entra a la carpeta de tu nuevo proyecto y en la terminal escribí el comando `npm run dev` para verificar que funcione.
 
@@ -24,13 +53,14 @@ te configura un proyecto Vite nuevo (react/react-ts) con herramientas como eslin
 
 ## Pedir cambios o avisar de un error
 
-Para esto podes abrir un issue con lo que te gustaría agregar al proyecto, error o configuraciones extras que quisieras que se pudan seleccionar.
+Para esto podes abrir un issue con lo que te gustaría agregar al proyecto, error o configuraciones extras que quisieras que se puedan seleccionar.
 
 ## Herramientas en tu nuevo proyecto ✨
 
 Dependiendo del template seleccionado:
 
-- [React](https://reactjs.org/) solo o con [TypeScript](https://www.typescriptlang.org/)
+- [React](https://reactjs.org/)
+- [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
 
 Dependiendo de las respuestas:
 
@@ -49,7 +79,7 @@ Dependiendo de las respuestas:
 Routers:
 
 - [React Router](https://reactrouter.com/docs/en/v6/getting-started/overview)
-- [Wouter](https://github.com/molefrog/wouter)
+- [Wouter](https://github.com/molefrog/wouter) (🚧)
 
 ## Autora
 
