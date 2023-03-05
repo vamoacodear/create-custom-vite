@@ -26,8 +26,7 @@ export const PRETTIER_DEFAULT = {
 export const PRETTIER_NONE = {}
 
 export const LINTSTG_DEFAULT = {
-  './*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
-  './*.{json,css,md}': ['prettier --write'],
+  './src/*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
 }
 
 export const HUSKY_DEFAULT = `#!/usr/bin/env sh
