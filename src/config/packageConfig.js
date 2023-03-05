@@ -1,4 +1,4 @@
-export const eslint_default = {
+export const ESLINT_DEFAULT = {
   env: {
     browser: true,
     es2021: true,
@@ -15,7 +15,7 @@ export const eslint_default = {
   },
 }
 
-export const prettier_default = {
+export const PRETTIER_DEFAULT = {
   semi: false,
   trailingComma: 'es5',
   singleQuote: true,
@@ -23,4 +23,14 @@ export const prettier_default = {
   tabWidth: 2,
 }
 
-export const prettier_none = {}
+export const PRETTIER_NONE = {}
+
+export const LINTSTG_DEFAULT = {
+  './*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
+  './*.{json,css,md}': ['prettier --write'],
+}
+
+export const HUSKY_DEFAULT = `#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx lint-staged`

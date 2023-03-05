@@ -1,10 +1,10 @@
 export const toolsOptions = [
   {
     config: {
-      default: 'default',
+      default: 'eslint eslint-plugin-react',
       special: 'standard',
     },
-    value: 'eslint-recommended',
+    value: 'eslint',
     label: 'ESLint',
     hint: 'recomendado',
   },
@@ -12,7 +12,7 @@ export const toolsOptions = [
     config: {
       default: 'prettier eslint-config-prettier eslint-plugin-prettier',
     },
-    value: 'prettier-recommended',
+    value: 'prettier',
     label: 'Prettier',
     hint: 'recomendado',
   },
@@ -39,7 +39,21 @@ export const toolsOptions = [
   },
 ]
 
-export const packageManagerOptions = ['npm']
+export const packageManagerOptions = [
+  {
+    value: 'npm',
+    label: 'npm',
+    hint: 'recomendado',
+  },
+  {
+    value: 'pnpm',
+    label: 'pnpm',
+  },
+  {
+    value: 'yarn',
+    label: 'yarn',
+  },
+]
 
 export const viteTemplateOptions = [
   { value: 'react', label: 'react' },

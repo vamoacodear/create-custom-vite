@@ -14,6 +14,7 @@
   "keywords": [
     "cli",
     "vite",
+    "npm",
     "react",
     "eslint",
     "prettier",
@@ -25,10 +26,10 @@
   "license": "MIT",
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "4.1.1",
+    "create-custom-vite": "file://.",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
-    "prettier": "2.8.4",
-    "create-custom-vite": "file://."
+    "prettier": "2.8.4"
   },
   "dependencies": {
     "@clack/prompts": "0.6.1",
