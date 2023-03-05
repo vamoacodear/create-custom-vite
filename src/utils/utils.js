@@ -1,7 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 import { cancel, outro, spinner } from '@clack/prompts'
 import { exec } from 'child_process'
 import { promisify } from 'node:util'
 
+import * as m from '../config/messages.js'
 import { toolsOptions } from '../config/options.js'
 import { deleteDirectory } from '../utils/files.js'
 
@@ -9,21 +11,20 @@ const execAsync = promisify(exec)
 const s = spinner()
 
 export const installDependencies = async (directory, manager, packages) => {
-  s.start(
-    `⏳ Instalando paquetes via ${manager}... puede tardar unos segundos!`
-  )
+  s.start(m.INTALLING_PCKGS_SP.replace('_manager_', manager))
 
+  let command = manager === 'yarn' ? 'add' : 'install'
   const { stdout, stderr } = await execAsync(
-    `cd ${directory} && ${manager} install ${packages}`
+    `cd ${directory} && ${manager} ${command} ${packages}`
   )
 
   if (stdout) {
-    s.stop('✅ Instalación finalizada')
+    s.stop(m.INTALLING_PCKGS_OK)
   }
 
   if (stderr) {
-    s.stop(`🚨 ${stderr}`)
-    process.exit(1)
+    s.stop('👇🏻')
+    onCancel(directory, 1, m.INSTALLING_ERR.replace('_stderr_', stderr))
   }
 }
 
@@ -42,17 +43,17 @@ export const createViteTemplate = async (directory, answers) => {
     viteCreate += ` --template ${template}`
   }
 
-  s.start(`⏳ Ejecutando la creación del proyecto: ${directory} `)
+  s.start(m.VITE_CREATING_SP.replace('_directory_', directory))
 
   const { stdout, stderr } = await execAsync(`${manager} ${viteCreate}`)
 
   if (stdout) {
-    s.stop(`✅ Proyecto ${directory} creado exitosamente`)
+    s.stop(m.VITE_CREATING_OK.replace('_directory_', directory))
   }
 
   if (stderr) {
-    s.stop(`🚨 ${stderr}`)
-    await exitProgram({ name: directory })
+    s.stop('👇🏻')
+    onCancel(directory, 1, m.VITE_ERR.replace('_stderr_', stderr))
   }
 }
 
@@ -87,15 +88,11 @@ export const getPackagesToInstall = (answers) => {
   return packages.join(' ').trim()
 }
 
-export function exitProgram({
-  name = '',
-  code = 0,
-  message = '💔 Cancelaste la operación.',
-} = {}) {
-  cancel(message)
+export const onCancel = (name, code = 0, msg = m.CANCEL_OP) => {
   const cb = () => {
-    outro(`🗑️ El directorio ${name} se borró con exito.`)
+    outro(m.DELETED_FOLDER.replace('_name_', name))
   }
   name && deleteDirectory(name, cb)
+  cancel(msg)
   process.exit(code)
 }

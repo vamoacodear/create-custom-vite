@@ -1,14 +1,13 @@
-import { intro, outro, spinner } from '@clack/prompts'
+import { spinner } from '@clack/prompts'
 import fs from 'fs'
 import path from 'path'
 
-import {
-  eslint_default,
-  prettier_default,
-  prettier_none,
-} from '../config/pckgsConfigs.js'
+import * as m from '../config/messages.js'
+import * as pc from '../config/packageConfig.js'
+import { onCancel } from '../utils/utils.js'
 
 const PACKAGE_JSON = 'package.json'
+const s = spinner()
 
 const saveFile = (dir, file) => {
   fs.writeFileSync(path.join(dir, PACKAGE_JSON), JSON.stringify(file, null, 2))
@@ -16,22 +15,20 @@ const saveFile = (dir, file) => {
 
 export const deleteDirectory = (directory, cb) => {
   if (fs.existsSync(directory)) {
-    fs.rm(directory, () => cb())
+    fs.rmdirSync(directory, { recursive: true })
+    cb()
   }
 }
 
 export const createDirectory = (directory) => {
   if (!fs.existsSync(directory)) {
-    // outro(`✅ El directorio ${directory} no existe. Se creará automáticamente.`)
     fs.mkdirSync(directory, { recursive: true })
     return true
-  } else {
-    outro(`🥴 El directorio ${directory} ya existe, elegí otro nombre.`)
-    return false
   }
+  return false
 }
 
-export const getFile = (dir, file) => {
+export const getContentFile = (dir, file) => {
   const pathFile = path.join(dir, file)
   return readFile(pathFile)
 }
@@ -42,77 +39,66 @@ export const saveContent = (dir, config, file) => {
   fs.writeFileSync(pathFile, pathContent)
 }
 
-export const setConfigurations = async (directory, answers) => {
-  const s = spinner()
-
+export const setConfigurations = (directory, answers, manager) => {
   const {
     tools: [includeESLint, includePrettier, includeHusky, includeLintStaged],
     eslintConfigType,
     prettierConfigType,
   } = answers
 
-  const packageJson = getFile(directory, PACKAGE_JSON)
+  const packageJson = getContentFile(directory, PACKAGE_JSON)
 
   if (includeESLint) {
-    s.start('⏳ Configurando ESLint...')
+    s.start(m.CONFIG_ESLINT_SP)
 
     if (eslintConfigType === 'default') {
-      saveContent(directory, eslint_default, '.eslintrc')
+      saveContent(directory, pc.ESLINT_DEFAULT, '.eslintrc')
     } else {
       packageJson.eslintConfig = {
         extends: 'standard',
       }
     }
-    s.stop('✅ Configuración de ESLint finalizada...')
+    s.stop(m.CONFIG_ESLINT_OK)
   }
 
   if (includePrettier) {
-    s.start('⏳ Configurando Prettier')
+    s.start(m.CONFIG_PRETTIER_SP)
 
     const prettierConfig =
-      prettierConfigType === 'default' ? prettier_default : prettier_none
+      prettierConfigType === 'default' ? pc.PRETTIER_DEFAULT : pc.PRETTIER_NONE
 
     saveContent(directory, prettierConfig, '.prettierrc')
 
-    s.stop('✅ Configuración de Prettier finalizada!')
+    s.stop(m.CONFIG_ESLINT_OK)
   }
 
   if (includeLintStaged) {
-    s.start('⏳ Configurando lint-staged en package.json')
-
-    if (!packageJson.scripts) {
-      packageJson.scripts = {}
-    }
+    s.start(m.CONFIG_LINTSTG_SP)
 
     packageJson.scripts['lint-staged'] = 'lint-staged'
 
-    packageJson['lint-staged'] = {
-      './*.{js,jsx,ts,tsx}': ['eslint --fix', 'prettier --write'],
-      './*.{json,css,md}': ['prettier --write'],
-    }
+    packageJson['lint-staged'] = pc.LINTSTG_DEFAULT
 
-    s.stop('✅ Lint Staged configurado!')
+    s.stop(m.CONFIG_LINTSTG_OK)
   }
 
   if (includeHusky) {
-    s.start('⏳ Configurando Husky para que corra lint-staged')
+    s.start(m.CONFIG_HUSKY_SP)
 
     const huskyDirectory = path.resolve(directory, '.husky')
     createDirectory(huskyDirectory)
 
     const huskyConfigPath = path.resolve(directory, '.husky', 'pre-commit')
-    const huskyConfigContent = `#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-npx lint-staged`
+    const huskyConfigContent = pc.HUSKY_DEFAULT
     fs.writeFileSync(huskyConfigPath, huskyConfigContent)
 
-    s.stop('✅ Husky configurado!')
+    s.stop(m.CONFIG_HUSKY_OK)
   }
 
-  s.start('⏳ Guardando cambios en package.json')
+  s.start(m.SAVE_CHANGES_PJSON)
+  if (manager === 'yarn') packageJson['license'] = 'UNLICENSED'
   saveFile(directory, packageJson)
-  s.stop('✅ Cambios guardado en package.json')
+  s.stop(m.SAVED_CHANGES_PJSON)
 }
 
 export const readFile = (path) => {
@@ -121,8 +107,12 @@ export const readFile = (path) => {
       const content = fs.readFileSync(path, 'utf8')
       return JSON.parse(content)
     } catch (error) {
-      outro(`🚨 ${error.message}`)
-      process.exit(1)
+      s.stop('👇🏻')
+      onCancel(
+        path,
+        1,
+        m.READ_FILE_ERR.replace('_path_', path).replace('_msg_', error.message)
+      )
     }
   }
 }

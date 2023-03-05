@@ -1,70 +1,68 @@
 import * as p from '@clack/prompts'
 import colors from 'picocolors'
 
-import {
-  eslintOptions,
-  prettierOptions,
-  toolsOptions,
-  viteTemplateOptions,
-} from './options.js'
+import * as m from './messages.js'
+import * as o from './options.js'
 
 export const getProjectName = async () =>
-  p.text({
-    message: colors.cyan('1️⃣  Ponele nombre a tu proyecto:'),
+  await p.text({
+    message: colors.cyan(m.PROJECT_NAME_OP),
     validate: (value) => {
       if (value.length === 0) {
-        return colors.red('⚠️ El mensaje no puede estar vacío')
-      }
-
-      if (value.length > 50) {
-        return colors.red('⚠️  El mensaje no puede tener más de 50 caracteres')
+        return colors.red(m.PROJECT_EMPTY_NAME)
       }
     },
   })
 
 export const getTemplate = async () =>
   await p.select({
-    message: '2️⃣  Seleccioná el template de Vite a utilizar:',
-    options: viteTemplateOptions,
+    message: m.TEMPLATE_OP,
+    options: o.viteTemplateOptions,
     required: true,
     initialValue: 'react',
     defaultValue: 'react',
   })
 
 export const getPackageManager = async () =>
-  await p.text({
-    message: '3️⃣  Seleccioná el manejador de paquetes a utilizar:',
+  await p.select({
+    message: m.PCKG_MNG_OP,
+    options: o.packageManagerOptions,
     required: true,
-    initialValue: 'npm',
-    defaultValue: 'npm',
+    initialValue: 'yarn',
+    defaultValue: 'yarn',
   })
 
-export const getTools = async () => {
-  return await p.group({
-    tools: ({ results }) =>
-      p.multiselect({
-        message: `💡¿Agregamos otras herramientas?`,
-        initialValues: ['eslint-recommended', 'prettier-recommended'],
-        options: toolsOptions,
-        required: false,
-      }),
-    eslintConfigType: ({ results }) => {
-      if (!results.includeEslint) {
-        return p.select({
-          message: '¿Que tipo de configuración queres para ESLint?',
-          options: eslintOptions,
-          required: true,
-        })
-      }
+export const getTools = async (onCancel) => {
+  return await p.group(
+    {
+      tools: () =>
+        p.multiselect({
+          message: m.OPTIONAL_TOOLS_OP,
+          initialValues: ['eslint', 'prettier'],
+          options: o.toolsOptions,
+          required: false,
+        }),
+      eslintConfigType: ({ results }) => {
+        if (!results.includeEslint) {
+          return p.select({
+            message: m.ESLINT_CONFIG_OP,
+            options: o.eslintOptions,
+            required: false,
+          })
+        }
+      },
+      prettierConfigType: ({ results }) => {
+        if (!results.includePrettier) {
+          return p.select({
+            message: m.PRETTIER_CONFIG_OP,
+            options: o.prettierOptions,
+            required: false,
+          })
+        }
+      },
     },
-    prettierConfigType: ({ results }) => {
-      if (!results.includePrettier) {
-        return p.select({
-          message: `¿Que tipo de configuración queres para Prettier?`,
-          options: prettierOptions,
-          required: true,
-        })
-      }
-    },
-  })
+    {
+      onCancel,
+    }
+  )
 }
