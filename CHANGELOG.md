@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/vamoacodear/create-custom-vite/compare/v1.1.1...v1.1.2) (2023-03-17)
+
+
+### Bug Fixes
+
+* **cli:** cancel message ([dd2ef1f](https://github.com/vamoacodear/create-custom-vite/commit/dd2ef1f8ca7c6a4d77d980a56c3f7d55750c6f5a))
+* **cli:** text about name of project ([5ca7039](https://github.com/vamoacodear/create-custom-vite/commit/5ca703918babbb5c534abbd180fc49421e3a97a7))
+* **cli:** view of demo-videos ([cd7be70](https://github.com/vamoacodear/create-custom-vite/commit/cd7be708a12b5426f81d4170c0979a5c9fb7b758))
+
 ### [1.1.1](https://github.com/vamoacodear/create-custom-vite/compare/v1.1.0...v1.1.1) (2023-03-17)
 
 
