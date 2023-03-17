@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/vamoacodear/create-custom-vite/compare/v1.1.0...v1.1.1) (2023-03-17)
+
+
+### Bug Fixes
+
+* **cli:** command for english and lang on readmes ([059ea1a](https://github.com/vamoacodear/create-custom-vite/commit/059ea1a594a3c9cbd3b13a2ded2ccfa97062fc9e))
+
 ## 1.1.0 (2023-03-17)
 
 
