@@ -83,7 +83,7 @@ export const prettierOptions = [
     value: 'default',
     label: 'Default',
   },
-  { value: 'special', label: '-' },
+  { value: 'special', label: 'None' },
 ]
 
 export const stateManagerOptions = ['redux toolkit', 'react-query', 'zustand']

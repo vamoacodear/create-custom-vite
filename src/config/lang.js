@@ -1,7 +1,7 @@
 export const messages = {
   es: {
     project_name_op: '1️⃣  Ponele nombre a tu proyecto:',
-    project_empty_name: '⚠️ El mensaje no puede estar vacío',
+    project_empty_name: '⚠️ El nombre no puede estar vacío',
     cancel_op: '🫢  Cancelaste la operación.',
     template_op: '2️⃣  Seleccioná el template de Vite:',
     pckg_mng_op: '3️⃣  Seleccioná el manejador de paquetes:',
@@ -36,7 +36,7 @@ export const messages = {
   },
   en: {
     project_name_op: '1️⃣  Name your project:',
-    project_empty_name: '⚠️ The message cannot be empty.',
+    project_empty_name: '⚠️ The name cannot be empty.',
     cancel_op: '🫢  You canceled the operation.',
     template_op: '2️⃣  Select Vite template:',
     pckg_mng_op: '3️⃣  Select package manager:',
