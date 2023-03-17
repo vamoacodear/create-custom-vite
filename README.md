@@ -4,13 +4,14 @@ CLI en construcción 🚧 para crear proyecto de Vite, que por el momento utiliz
 
 Podes elegir entre estas herramientas, algunas tienen opciones de configuración extra:
 
-| Nombre | Configuración | Recomendado
-| ------ | --- | ---
-| ESLint | Recomendada - Standar |  ✅   |
-| Prettier | Por defecto - Ninguna | ✅
-| Husky |
-| Lint Staged |
-| React router |
+| Nombre       | Configuración         | Recomendado | Type             |
+| ------------ | --------------------- | ----------- | ---------------- |
+| ESLint       | Recomendada - Standar | ✅          | Linter/Formatter |
+| Prettier     | Default - Ninguna     | ✅          | Formatter        |
+| Husky        |                       |             | Git Hooks        |
+| Lint Staged  |                       |             | Git Linter       |
+| React router |                       |             | Router           |
+| Wouter       |                       |             | Router           |
 
 De esta manera no perdes tiempo y podes empezar a codear! 🤓
 
@@ -20,27 +21,27 @@ De esta manera no perdes tiempo y podes empezar a codear! 🤓
 
 **ESLint**
 
-| **Recomendada** |Standar |
-| --- | --- |
-|✔ How would you like to use ESLint? · **problems** | [Info](https://www.npmjs.com/package/standard#install)
-✔ What type of modules does your project use? · **esm** |
-✔ Which framework does your project use? · **react** |
-✔ Does your project use TypeScript? · **No 🚧** / Yes |
-✔ Where does your code run? · **browser** |
-✔ What format do you want your config file to be in? · **JavaScript** |
+| **Recomendada**                                                       | Standar                                                |
+| --------------------------------------------------------------------- | ------------------------------------------------------ |
+| ✔ How would you like to use ESLint? · **problems**                    | [Info](https://www.npmjs.com/package/standard#install) |
+| ✔ What type of modules does your project use? · **esm**               |
+| ✔ Which framework does your project use? · **react**                  |
+| ✔ Does your project use TypeScript? · **No 🚧** / Yes                 |
+| ✔ Where does your code run? · **browser**                             |
+| ✔ What format do you want your config file to be in? · **JavaScript** |
 
 **Prettier**
 
-| **Por defecto** | Ninguna |
-| ----------------| ------- |
-| [Info](PRETTIER_CONFIG.md) | {} |
+| **Default**                | Ninguna |
+| -------------------------- | ------- |
+| [Info](PRETTIER_CONFIG.md) | {}      |
 
 ## Como usar
 
 1. Ejecuta el siguiente comando para crear tu proyecto:
 
 ```bash
- npx create-custom-vite
+ npx create-custom-vite --en
 ```
 
 2. Responde las preguntas con (y/n) o elegiendo una de las opciones.
@@ -79,7 +80,7 @@ Dependiendo de las respuestas:
 Routers:
 
 - [React Router](https://reactrouter.com/docs/en/v6/getting-started/overview)
-- [Wouter](https://github.com/molefrog/wouter) (🚧)
+- [Wouter](https://github.com/molefrog/wouter)
 
 ## Autora
 

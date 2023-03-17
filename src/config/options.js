@@ -34,8 +34,15 @@ export const toolsOptions = [
     config: {
       default: 'react-router-dom localforage match-sorter sort-by',
     },
-    value: 'router',
+    value: 'react-router',
     label: 'React Router',
+  },
+  {
+    config: {
+      default: 'wouter',
+    },
+    value: 'wouter',
+    label: 'Wouter',
   },
 ]
 
@@ -43,11 +50,11 @@ export const packageManagerOptions = [
   {
     value: 'npm',
     label: 'npm',
-    hint: 'recomendado',
   },
   {
     value: 'pnpm',
     label: 'pnpm',
+    hint: 'recomendado',
   },
   {
     value: 'yarn',
@@ -74,10 +81,10 @@ export const eslintOptions = [
 export const prettierOptions = [
   {
     value: 'default',
-    label: 'Por defecto',
+    label: 'Default',
   },
-  { value: 'special', label: 'Ninguna' },
+  { value: 'special', label: '-' },
 ]
 
 export const stateManagerOptions = ['redux toolkit', 'react-query', 'zustand']
-export const routersOptions = ['react-router-dom', 'wouter']
+export const routersOptions = ['react-router', 'wouter']

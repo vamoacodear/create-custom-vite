@@ -1,10 +1,11 @@
 import { spinner } from '@clack/prompts'
 import fs from 'fs'
+import os from 'os'
 import path from 'path'
 
-import * as m from '../config/messages.js'
+import { messages } from '../config/lang.js'
 import * as pc from '../config/packageConfig.js'
-import { onCancel } from '../utils/utils.js'
+import * as u from '../utils/utils.js'
 
 const PACKAGE_JSON = 'package.json'
 const s = spinner()
@@ -40,6 +41,8 @@ export const saveContent = (dir, config, file) => {
 }
 
 export const setConfigurations = (directory, answers, manager) => {
+  const lang = getConfig()
+  const m = messages[lang]
   const {
     tools: [includeESLint, includePrettier, includeHusky, includeLintStaged],
     eslintConfigType,
@@ -49,7 +52,7 @@ export const setConfigurations = (directory, answers, manager) => {
   const packageJson = getContentFile(directory, PACKAGE_JSON)
 
   if (includeESLint) {
-    s.start(m.CONFIG_ESLINT_SP)
+    s.start(m.config_eslint_sp)
 
     if (eslintConfigType === 'default') {
       saveContent(directory, pc.ESLINT_DEFAULT, '.eslintrc')
@@ -58,32 +61,32 @@ export const setConfigurations = (directory, answers, manager) => {
         extends: 'standard',
       }
     }
-    s.stop(m.CONFIG_ESLINT_OK)
+    s.stop(m.config_eslint_ok)
   }
 
   if (includePrettier) {
-    s.start(m.CONFIG_PRETTIER_SP)
+    s.start(m.config_prettier_sp)
 
     const prettierConfig =
       prettierConfigType === 'default' ? pc.PRETTIER_DEFAULT : pc.PRETTIER_NONE
 
     saveContent(directory, prettierConfig, '.prettierrc')
 
-    s.stop(m.CONFIG_ESLINT_OK)
+    s.stop(m.config_prettier_ok)
   }
 
   if (includeLintStaged) {
-    s.start(m.CONFIG_LINTSTG_SP)
+    s.start(m.config_lintstg_sp)
 
     packageJson.scripts['lint-staged'] = 'lint-staged'
 
     packageJson['lint-staged'] = pc.LINTSTG_DEFAULT
 
-    s.stop(m.CONFIG_LINTSTG_OK)
+    s.stop(m.config_lintstg_ok)
   }
 
   if (includeHusky) {
-    s.start(m.CONFIG_HUSKY_SP)
+    s.start(m.config_husky_sp)
 
     const huskyDirectory = path.resolve(directory, '.husky')
     createDirectory(huskyDirectory)
@@ -92,27 +95,62 @@ export const setConfigurations = (directory, answers, manager) => {
     const huskyConfigContent = pc.HUSKY_DEFAULT
     fs.writeFileSync(huskyConfigPath, huskyConfigContent)
 
-    s.stop(m.CONFIG_HUSKY_OK)
+    s.stop(m.config_husky_ok)
   }
 
-  s.start(m.SAVE_CHANGES_PJSON)
+  s.start(m.saving_changes_pjson)
   if (manager === 'yarn') packageJson['license'] = 'UNLICENSED'
   saveFile(directory, packageJson)
-  s.stop(m.SAVED_CHANGES_PJSON)
+  s.stop(m.saved_changes_pjson)
 }
 
 export const readFile = (path) => {
+  const lang = getConfig()
+  const m = messages[lang]
   if (fs.existsSync(path)) {
     try {
       const content = fs.readFileSync(path, 'utf8')
       return JSON.parse(content)
     } catch (error) {
       s.stop('👇🏻')
-      onCancel(
+      u.onCancel(
         path,
         1,
-        m.READ_FILE_ERR.replace('_path_', path).replace('_msg_', error.message)
+        m.read_file_err.replace('_path_', path).replace('_msg_', error.message)
       )
     }
   }
+}
+
+export const setConfig = () => {
+  const args = process.argv.slice(2)
+
+  let language = 'es'
+
+  if (args.includes('--en')) {
+    language = 'en'
+  }
+
+  const configDir = path.join(os.homedir(), '.create-custom-vite')
+  const configFile = path.join(configDir, 'config.json')
+
+  if (!fs.existsSync(configDir)) {
+    fs.mkdirSync(configDir)
+  }
+
+  if (!fs.existsSync(configFile)) {
+    fs.writeFileSync(configFile, JSON.stringify({ language: language }))
+  } else {
+    const currentConfig = JSON.parse(fs.readFileSync(configFile))
+    const newConfig = { language: language }
+    const updatedConfig = { ...currentConfig, ...newConfig }
+    fs.writeFileSync(configFile, JSON.stringify(updatedConfig))
+  }
+}
+
+export default function getConfig() {
+  const configDir = path.join(os.homedir(), '.create-custom-vite')
+  const configFile = path.join(configDir, 'config.json')
+  const config = JSON.parse(fs.readFileSync(configFile))
+  return config.language
 }
