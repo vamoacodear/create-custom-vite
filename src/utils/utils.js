@@ -95,13 +95,19 @@ export const getPackagesToInstall = (answers) => {
   return packages.join(' ').trim()
 }
 
-export const onCancel = (name, code = 0, msg = m.cancel_op) => {
+export const onCancel = (name, code, msg) => {
   const lang = getConfig()
   const m = messages[lang]
+
+  if (!msg) {
+    msg = m.cancel_op
+  }
+
   const cb = () => {
     outro(m.deleted_folder.replace('_name_', name))
   }
+
   name && deleteDirectory(name, cb)
   cancel(msg)
-  process.exit(code)
+  process.exit(!code && 1)
 }
