@@ -1,5 +1,7 @@
 # create-custom-vite
 
+Change lang: [EN](README_EN.md)
+
 CLI en construcción 🚧 para crear proyecto de Vite, que por el momento utiliza como base los templates oficiales: react o react-ts.
 
 Podes elegir entre estas herramientas, algunas tienen opciones de configuración extra:
@@ -41,7 +43,7 @@ De esta manera no perdes tiempo y podes empezar a codear! 🤓
 1. Ejecuta el siguiente comando para crear tu proyecto:
 
 ```bash
- npx create-custom-vite --en
+ npx create-custom-vite
 ```
 
 2. Responde las preguntas con (y/n) o elegiendo una de las opciones.

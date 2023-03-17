@@ -1,5 +1,7 @@
 # create-custom-vite
 
+Cambia el lenguaje: [ES](README.md)
+
 CLI under construction 🚧 to create Vite project, that for the moment uses as base the official templates: react or react-ts.
 
 You can choose between these tools, some of them have extra configuration options:
