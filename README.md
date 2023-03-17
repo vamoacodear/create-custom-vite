@@ -48,6 +48,7 @@ De esta manera no perdes tiempo y podes empezar a codear! 🤓
 
 https://user-images.githubusercontent.com/109123029/225988309-1105d2d2-b4aa-4227-90a3-4e3e03f9b0e6.mp4
 
+
 2. Responde las preguntas con (y/n) o elegiendo una de las opciones.
 
 > 💡 Si la opción esta tildada por defecto, podes utilizar **Enter**
