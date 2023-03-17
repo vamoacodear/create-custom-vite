@@ -46,10 +46,11 @@ This way you don't waste any time and you can start coding! 🤓
  npx create-custom-vite --en
 ```
 
+---
+
 https://user-images.githubusercontent.com/109123029/225988137-fe2c4337-9241-47fc-9ac0-b974d2f94471.mp4
 
-
-
+---
 
 2. Answer the questions with (y/n) or by choosing one of the options.
 
